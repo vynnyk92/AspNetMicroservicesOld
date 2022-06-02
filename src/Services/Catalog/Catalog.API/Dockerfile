@@ -7,10 +7,19 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
 COPY ["Services/Catalog/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
-RUN dotnet restore "Services/Catalog/Catalog.API/Catalog.API.csproj"
+COPY ["Services/Catalog/Catalog.API.UnitTests/Catalog.API.UnitTests.csproj", "Services/Catalog/Catalog.API.UnitTests/"]
+
+RUN curl https://api.nuget.org/v3/index.json -k
+
+RUN dotnet restore "/src/Services/Catalog/Catalog.API/Catalog.API.csproj" --disable-parallel
+RUN dotnet restore "/src/Services/Catalog/Catalog.API.UnitTests/Catalog.API.UnitTests.csproj" --disable-parallel
+
 COPY . .
 WORKDIR "/src/Services/Catalog/Catalog.API"
 RUN dotnet build "Catalog.API.csproj" -c Release -o /app/build
+
+WORKDIR "/src/Services/Catalog/Catalog.API.UnitTests"
+RUN dotnet test Catalog.API.UnitTests.csproj
 
 FROM build AS publish
 RUN dotnet publish "Catalog.API.csproj" -c Release -o /app/publish
