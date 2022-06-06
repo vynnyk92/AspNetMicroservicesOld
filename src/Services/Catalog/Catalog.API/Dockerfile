@@ -18,9 +18,6 @@ COPY . .
 WORKDIR "/src/Services/Catalog/Catalog.API"
 RUN dotnet build "Catalog.API.csproj" -c Release -o /app/build
 
-WORKDIR "/src/Services/Catalog/Catalog.API.UnitTests"
-RUN dotnet test Catalog.API.UnitTests.csproj
-
 FROM build AS publish
 RUN dotnet publish "Catalog.API.csproj" -c Release -o /app/publish
 
