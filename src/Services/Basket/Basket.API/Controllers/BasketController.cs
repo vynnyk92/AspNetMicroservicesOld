@@ -37,7 +37,7 @@ namespace Basket.API.Controllers
             return NoContent();
         }
 
-        [HttpPost("{userName}")]
+        [HttpPost()]
         [ProducesResponseType(typeof(ShoppingCart), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateBasket([FromBody] ShoppingCart shoppingCart)
             => Ok(await _basketRepository.UpdateCart(shoppingCart));
